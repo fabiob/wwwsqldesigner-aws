@@ -1,0 +1,46 @@
+service: wwwsqldesigner
+
+provider:
+  name: aws
+  runtime: python3.7
+  environment:
+    S3_BUCKET: ${env:S3_BUCKET}
+    S3_PREFIX: ${env:S3_PREFIX, 'wwwsqldesigner/'}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.S3_BUCKET}" ] ] }
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.S3_BUCKET}", "/", "${self:provider.environment.S3_PREFIX}", "*" ] ] }
+
+package:
+  exclude:
+    - ".*/**"
+    - ".*"
+
+functions:
+  backend:
+    handler: handler.backend
+    events:
+      - http:
+          path: backend/s3-lambda
+          method: post
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                action: true
+                keyword: true
+      - http:
+          path: backend/s3-lambda
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                action: true
+                keyword: false
+                database: false

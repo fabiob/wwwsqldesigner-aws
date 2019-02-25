@@ -1,0 +1,8 @@
+# Distribution / packaging
+.venv/
+
+# Serverless directories
+.serverless
+
+# IDEs
+.vscode/
