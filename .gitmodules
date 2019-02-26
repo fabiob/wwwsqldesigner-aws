@@ -1,0 +1,3 @@
+[submodule "wwwsqldesigner"]
+	path = static
+	url = git@github.com:fabiob/wwwsqldesigner.git
