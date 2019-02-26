@@ -1,20 +1,29 @@
 service: wwwsqldesigner
 
+custom:
+  stage: ${opt:stage, 'dev'}
+  storage:
+    bucket: ${env:STORAGE_S3_BUCKET}
+    prefix: ${env:STORAGE_S3_PREFIX, 'wwwsqldesigner/'}
+  statics:
+    bucket: ${env:STATICS_S3_BUCKET}
+  cf:
+    customDomain: ${env:CF_DOMAIN}
+    certificateArn: ${env:CF_CERT_ARN}
+
 provider:
   name: aws
   runtime: python3.7
   environment:
-    S3_BUCKET: ${env:S3_BUCKET}
-    S3_PREFIX: ${env:S3_PREFIX, 'wwwsqldesigner/'}
+    STORAGE_S3_BUCKET: ${self:custom.storage.bucket}
+    STORAGE_S3_PREFIX: ${self:custom.storage.prefix}
   iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "s3:ListBucket"
-      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.S3_BUCKET}" ] ] }
-    - Effect: "Allow"
-      Action:
-        - "s3:*"
-      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.S3_BUCKET}", "/", "${self:provider.environment.S3_PREFIX}", "*" ] ] }
+    - Effect: Allow
+      Action: [ 's3:ListBucket' ]
+      Resource: arn:aws:s3:::${self:custom.storage.bucket}
+    - Effect: Allow
+      Action: [ 's3:*' ]
+      Resource: arn:aws:s3:::${self:custom.storage.bucket}/${self:custom.storage.prefix}*
 
 package:
   excludeDevDependencies: false
@@ -45,3 +54,6 @@ functions:
                 action: true
                 keyword: false
                 database: false
+
+resources:
+  ${file(serverless-resources.yml)}

@@ -1,21 +1,20 @@
 # wwwsqldesigner-aws
 
-Custom backend to store `wwwsqldesigner` models on S3, using lambda functions.
+Complete serverless deployment for `wwwsqldesigner`, including a custom backend to save models on S3 using lambda functions.
 
 ## Required environment variables
 
-* `S3_BUCKET`: the bucket in which to store the database designs. Must already exist.
+* `STORAGE_S3_BUCKET`: the bucket in which to store the database designs. Must already exist.
+* `STORAGE_S3_PREFIX`: the prefix to use when loadind and saving database designs.
+* `STATICS_S3_BUCKET`: the bucket in which to read the `wwwsqldesigner` static files. Must already exist.
 
-## How to deploy
+## Optional environment variables
 
-```bash
-npm install
-serverless deploy
-```
+* `CF_DOMAIN`: a custom domain name to use on the CloudFront distribution.
+* `CF_CERT_ARN`: the ARN of an ACM certificate to use for the custom domain.
 
 ## TODO
 
-* Deploy `wwwsqldesigner` to S3 static website hosting;
 * Add authentication;
 * Add authorization.
 

@@ -1,0 +1,74 @@
+Resources:
+  WebAppS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.statics.bucket}
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  ## Specifying the policies to make sure all files inside the Bucket are available to CloudFront
+  WebAppS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: WebAppS3Bucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action:
+            - s3:GetObject
+            Resource: arn:aws:s3:::${self:custom.statics.bucket}/*
+
+  ## Specifying the CloudFront Distribution to serve the Web App (static assets) and Backend (lambda function)
+  WebAppCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: 'true'
+        DefaultRootObject: index.html
+        Origins:
+          - Id: WebApp
+            DomainName: ${self:custom.statics.bucket}.s3.amazonaws.com
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+          - Id: Backend
+            DomainName:
+              'Fn::Join': [ "", [ { Ref: 'ApiGatewayRestApi' }, '.execute-api.', { Ref: 'AWS::Region' }, '.amazonaws.com' ] ]
+            OriginPath: /${self:custom.stage}
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+        DefaultCacheBehavior:
+          AllowedMethods: [ HEAD, GET, OPTIONS ]
+          TargetOriginId: WebApp
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        CacheBehaviors:
+          - AllowedMethods: [ HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH ]
+            CachedMethods: [ HEAD, GET, OPTIONS ]
+            DefaultTTL: 0
+            Compress: true
+            ForwardedValues:
+              Headers: [ 'Accept', 'Referer', 'Authorization', 'Content-Type' ]
+              QueryString: true
+            PathPattern: '/backend/*'
+            TargetOriginId: Backend
+            ViewerProtocolPolicy: https-only
+        # Aliases:
+        #   - ${self:custom.cf.customDomain}
+        # ViewerCertificate:
+        #   AcmCertificateArn: ${self:custom.cf.certificateArn}
+        #   SslSupportMethod: sni-only
+
+## In order to print out the hosted domain via `serverless info` we need to define the DomainName output for CloudFormation
+Outputs:
+  WebAppCloudFrontDistributionOutput:
+    Value:
+      'Fn::GetAtt': [ WebAppCloudFrontDistribution, DomainName ]
