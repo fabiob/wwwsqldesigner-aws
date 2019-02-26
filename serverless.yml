@@ -17,13 +17,14 @@ provider:
       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", "${self:provider.environment.S3_BUCKET}", "/", "${self:provider.environment.S3_PREFIX}", "*" ] ] }
 
 package:
+  excludeDevDependencies: false
   exclude:
-    - ".*/**"
-    - ".*"
+    - "**/*"
+    - "!src/*.py"
 
 functions:
   backend:
-    handler: handler.backend
+    handler: src.handler.backend
     events:
       - http:
           path: backend/s3-lambda

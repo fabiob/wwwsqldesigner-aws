@@ -2,8 +2,8 @@ import os
 import json
 import boto3
 
-from env import S3_BUCKET, S3_PREFIX
-from utils import respond, fix, fn
+from .env import S3_BUCKET, S3_PREFIX
+from .utils import respond, fix, fn
 
 s3 = boto3.client('s3')
 
@@ -17,7 +17,7 @@ def save(keyword, body):
 def load(keyword):
     response = s3.get_object(Bucket=S3_BUCKET, Key=fn(keyword))
 
-    return respond(response['Body'], mime='application/xml')
+    return respond(response['Body'].read(), mime='application/xml')
 
 
 def list_keywords():
