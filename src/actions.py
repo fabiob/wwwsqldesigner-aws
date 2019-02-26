@@ -17,7 +17,7 @@ def save(keyword, body):
 def load(keyword):
     response = s3.get_object(Bucket=S3_BUCKET, Key=fn(keyword))
 
-    return respond(response['Body'].read(), mime='application/xml')
+    return respond(response['Body'].read().decode('utf-8'), mime='application/xml')
 
 
 def list_keywords():
