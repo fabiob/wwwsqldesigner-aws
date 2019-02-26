@@ -13,6 +13,15 @@ Complete serverless deployment for `wwwsqldesigner`, including a custom backend 
 * `CF_DOMAIN`: a custom domain name to use on the CloudFront distribution.
 * `CF_CERT_ARN`: the ARN of an ACM certificate to use for the custom domain.
 
+## How to deploy
+
+Make sure the required environment variables are set, then:
+
+```bash
+npx serverless deploy
+aws s3 sync static/ s3://$STATICS_S3_BUCKET/ --exclude '.git/*'
+```
+
 ## TODO
 
 * Add authentication;
