@@ -61,11 +61,11 @@ Resources:
             PathPattern: '/backend/*'
             TargetOriginId: Backend
             ViewerProtocolPolicy: https-only
-        # Aliases:
-        #   - ${self:custom.cf.customDomain}
-        # ViewerCertificate:
-        #   AcmCertificateArn: ${self:custom.cf.certificateArn}
-        #   SslSupportMethod: sni-only
+        Aliases:
+          - ${self:custom.cf.customDomain}
+        ViewerCertificate:
+          AcmCertificateArn: ${self:custom.cf.certificateArn}
+          SslSupportMethod: sni-only
 
 ## In order to print out the hosted domain via `serverless info` we need to define the DomainName output for CloudFormation
 Outputs:
