@@ -5,11 +5,8 @@ Complete serverless deployment for `wwwsqldesigner`, including a custom backend 
 ## Required environment variables
 
 * `STORAGE_S3_BUCKET`: the bucket in which to store the database designs. Must already exist.
-* `STORAGE_S3_PREFIX`: the prefix to use when loadind and saving database designs.
+* `STORAGE_S3_PREFIX`: the prefix to use when loading and saving database designs.
 * `STATICS_S3_BUCKET`: the bucket in which to read the `wwwsqldesigner` static files. Must already exist.
-
-## Optional environment variables
-
 * `CF_DOMAIN`: a custom domain name to use on the CloudFront distribution.
 * `CF_CERT_ARN`: the ARN of an ACM certificate to use for the custom domain.
 
