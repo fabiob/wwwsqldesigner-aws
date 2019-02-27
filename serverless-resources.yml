@@ -67,6 +67,16 @@ Resources:
           AcmCertificateArn: ${self:custom.cf.certificateArn}
           SslSupportMethod: sni-only
 
+  GatewayResponse:
+    Type: 'AWS::ApiGateway::GatewayResponse'
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.WWW-Authenticate: "'Basic'"
+      ResponseType: UNAUTHORIZED
+      RestApiId:
+        Ref: 'ApiGatewayRestApi'
+      StatusCode: '401'
+
 ## In order to print out the hosted domain via `serverless info` we need to define the DomainName output for CloudFormation
 Outputs:
   WebAppCloudFrontDistributionOutput:

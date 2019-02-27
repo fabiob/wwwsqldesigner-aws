@@ -5,7 +5,6 @@ import boto3
 from .actions import save, load, list_keywords
 from .utils import respond
 
-
 def backend(event, context):
     """
     Handles wwwsqldesigner backend operations

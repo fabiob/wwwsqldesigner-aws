@@ -13,6 +13,20 @@ Complete serverless deployment for `wwwsqldesigner`, including a custom backend 
 * `CF_DOMAIN`: a custom domain name to use on the CloudFront distribution.
 * `CF_CERT_ARN`: the ARN of an ACM certificate to use for the custom domain.
 
+## Restricting access
+
+The backend is secured using browser-based basic authentication. To manage users,
+create a file named `users.json` on the root directory. The expected format is:
+
+```json
+{
+  "user1": "sha256 hash of the password",
+  "user2": "sha256 hash of the password"
+}
+```
+
+After creating or updating the user list, perform a new deploy (using `npx serverless deploy -f auth`).
+
 ## How to deploy
 
 Make sure the required environment variables are set, then:
@@ -24,7 +38,6 @@ aws s3 sync static/ s3://$STATICS_S3_BUCKET/ --exclude '.git/*'
 
 ## TODO
 
-* Add authentication;
 * Add authorization.
 
 ## License
