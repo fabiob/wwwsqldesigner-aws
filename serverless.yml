@@ -43,7 +43,9 @@ functions:
           path: backend/s3-lambda
           method: post
           cors: true
-          authorizer: auth
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
           request:
             parameters:
               querystrings:
