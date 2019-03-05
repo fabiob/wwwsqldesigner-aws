@@ -13,10 +13,12 @@ def load_users(path):
 
 def authorized(token):
     if not token:
+        print(f'Token is empty')
         return False
 
     m = re.match(r'^Basic (.*)', token)
     if not m:
+        print(f'Token does not contain basic auth: {token}')
         return False
 
     user, password = base64.b64decode(m.group(1)).decode('utf8').split(':', 1)
@@ -24,9 +26,11 @@ def authorized(token):
     correct_hash = users.get(user)
 
     if correct_hash is None:
+        print(f'User {user} not found in users.json')
         return False
 
     if correct_hash != hash_password(password):
+        print(f'Incorrect password for {user}')
         return False
 
     return user
